@@ -1,0 +1,34 @@
+TITLE:
+Step2_3step_automation Behavioral Disorder
+DATA:
+FILE = "/Users/agarber/Desktop/bd_paper_r_code/3step_mplus/Step2_3step_BD.dat";
+ 
+VARIABLE:
+NAMES = DO1 DO2 DO3 DO5 DO6 FEMALE ETHN_CMP SOC_STRS BOTHR_U NEGMOOD1 POSMOOD1
+     CPROB1 CPROB2 CPROB3 N; 
+ MISSING=.;
+ nominal=N;
+  USEVAR = n;
+  missing are all (999); 
+  classes = c(3); 
+ANALYSIS:
+estimator = mlr; 
+  type = mixture; 
+  starts = 0;
+MODEL:
+%C#1%
+[n#1@1.797];
+[n#2@-2.261];
+
+%C#2%
+[n#1@0];
+[n#2@13.816];
+
+%C#3%
+[n#1@-1.95];
+[n#2@-6.002];
+OUTPUT:
+!tech11  tech14 res;
+PLOT:
+!type = plot3; 
+  !series = do1 do2 do3 do5 do6(*);

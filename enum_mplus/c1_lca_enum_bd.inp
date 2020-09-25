@@ -1,0 +1,24 @@
+TITLE:
+Class-1 LCA Enumeration - Youth Coping Strategies
+DATA:
+FILE = "/Users/agarber/Desktop/bd_paper_r_code/enum_mplus/c_lca_enum_bd.dat";
+ 
+VARIABLE:
+NAMES = id FEMALE studraw ETHN_CMP do1 do2 do3 do4 do5 do6 do7 psolv1 psolv2 psolv3
+     psolv4 psolv5 psolv6 psolv7 psolv8 SOC_STRS BOTHR_U negmood1 posmood1; 
+ MISSING=.;
+ categorical = do1 do2 do3 do5 do6; 
+usevar = do1 do2 do3 do5 do6;
+    
+classes = c(1);
+ANALYSIS:
+estimator = mlr; 
+    type = mixture;
+    starts = 500 100;
+    stseed = 5082020; !!! to avoid re-arranging of classes !!!
+    processors=10;
+OUTPUT:
+sampstat tech11 tech14;
+PLOT:
+type = plot3; 
+    series = do1 do2 do3 do5 do6(*);

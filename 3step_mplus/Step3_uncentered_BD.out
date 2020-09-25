@@ -1,0 +1,431 @@
+Mplus VERSION 8.4 (Mac)
+MUTHEN & MUTHEN
+09/23/2020  10:43 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Step3_3step_automation Behavioral Disorder
+  DATA:
+  FILE = "/Users/agarber/Desktop/bd_paper_r_code/3step_mplus/Step3_3step_BD.dat";
+
+  VARIABLE:
+  NAMES = DO1 DO2 DO3 DO5 DO6 FEMALE ETHN_CMP SOC_STRS BOTHR_U NEGMOOD1 POSMOOD1
+       CPROB1 CPROB2 CPROB3 N;
+   MISSING=.;
+   nominal = N;
+    usevar = n;
+    missing are all (999);
+
+    usevar = SOC_STRS POSMOOD1 NEGMOOD1;
+    classes = c(3);
+  ANALYSIS:
+  estimator = mlr;
+    type = mixture;
+    starts = 0;
+  MODEL:
+  !DISTAL = POSMOOD1 NEGMOOD1
+  !MODERATOR = SOC_STRS
+
+  %OVERALL%
+  POSMOOD1 on SOC_STRS;
+  POSMOOD1;
+
+  NEGMOOD1 on SOC_STRS;
+  NEGMOOD1;
+
+  %C#1%
+  [n#1@1.797];
+  [n#2@-2.261];
+
+  [NEGMOOD1](m01);
+  NEGMOOD1;
+  NEGMOOD1 on SOC_STRS (s01);
+
+  [POSMOOD1] (m1);
+  POSMOOD1;
+  POSMOOD1 on SOC_STRS (s1);
+
+  %C#2%
+  [n#1@0];
+  [n#2@13.816];
+
+  [NEGMOOD1](m02);
+  NEGMOOD1;
+  NEGMOOD1 on SOC_STRS (s02);
+
+  [POSMOOD1] (m2);
+  POSMOOD1;
+  POSMOOD1 on SOC_STRS (s2);
+
+  %C#3%
+  [n#1@-1.95];
+  [n#2@-6.002];
+
+  [NEGMOOD1](m03);
+  NEGMOOD1;
+  NEGMOOD1 on SOC_STRS (s03);
+
+  [POSMOOD1] (m3);
+  POSMOOD1;
+  POSMOOD1 on SOC_STRS (s3);
+  MODEL CONSTRAINT:
+  New (diff12 diff13
+    diff23 slope12 slope13
+    slope23 ndiff12 ndiff13
+    ndiff23 nslope12 nslope13
+    nslope23);
+
+    diff12 = m1-m2;
+    diff13 = m1-m3;
+    diff23 = m2-m3;
+    slope12 = s1-s2;
+    slope13 = s1-s3;
+    slope23 = s2-s3;
+
+    ndiff12 = m01-m02;
+    ndiff13 = m01-m03;
+    ndiff23 = m02-m03;
+    nslope12 = s01-s02;
+    nslope13 = s01-s03;
+    nslope23 = s02-s03;
+  MODEL TEST:
+  m1=m2;
+    m2=m3;
+
+    !s1=s2;
+    !s2=s3;
+
+    !m01=m02;
+    !m02=m03;
+
+    !s01=s02;
+    !s02=s03;
+
+
+
+*** WARNING
+  Data set contains cases with missing on x-variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on x-variables:  4
+   1 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Step3_3step_automation Behavioral Disorder
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         442
+
+Number of dependent variables                                    3
+Number of independent variables                                  1
+Number of continuous latent variables                            0
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Continuous
+   POSMOOD1    NEGMOOD1
+
+  Unordered categorical (nominal)
+   N
+
+Observed independent variables
+   SOC_STRS
+
+Categorical latent variables
+   C
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+
+Input data file(s)
+  /Users/agarber/Desktop/bd_paper_r_code/3step_mplus/Step3_3step_BD.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+     Number of y missing data patterns           1
+     Number of u missing data patterns           0
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR Y
+
+
+           Covariance Coverage
+              POSMOOD1      NEGMOOD1      SOC_STRS
+              ________      ________      ________
+ POSMOOD1       1.000
+ NEGMOOD1       1.000         1.000
+ SOC_STRS       1.000         1.000         1.000
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    N
+      Category 1    0.577          255.000
+      Category 2    0.063           28.000
+      Category 3    0.360          159.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     POSMOOD1              2.997      -0.580       1.000    0.45%       2.400      3.000      3.000
+             442.000       0.410      -0.069       4.000    5.66%       3.200      3.600
+     NEGMOOD1              1.792       0.781       1.000   21.72%       1.000      1.400      1.600
+             442.000       0.496      -0.072       4.000    0.23%       1.800      2.400
+     SOC_STRS              0.715      -0.952       0.000   28.51%       0.000      1.000      1.000
+             442.000       0.204      -1.093       1.000   71.49%       1.000      1.000
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       21
+
+Loglikelihood
+
+          H0 Value                       -1155.000
+          H0 Scaling Correction Factor      1.0255
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    2352.001
+          Bayesian (BIC)                  2437.918
+          Sample-Size Adjusted BIC        2371.274
+            (n* = (n + 2) / 24)
+
+Wald Test of Parameter Constraints
+
+          Value                              1.621
+          Degrees of Freedom                     2
+          P-Value                           0.4447
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1        284.36658          0.64336
+       2         22.94667          0.05192
+       3        134.68675          0.30472
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1        284.36658          0.64336
+       2         22.94667          0.05192
+       3        134.68675          0.30472
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1              264          0.59729
+       2               26          0.05882
+       3              152          0.34389
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.716
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.859    0.013    0.128
+    2   0.034    0.966    0.000
+    3   0.140    0.002    0.858
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1      1.905   -2.309    0.000
+    2     10.430   13.764    0.000
+    3     -1.815   -6.223    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ POSMOOD1   ON
+    SOC_STRS           0.308      0.075      4.094      0.000
+
+ NEGMOOD1   ON
+    SOC_STRS          -0.414      0.102     -4.041      0.000
+
+ NEGMOOD1 WITH
+    POSMOOD1          -0.227      0.023     -9.729      0.000
+
+ Means
+    N#1                1.797      0.000    999.000    999.000
+    N#2               -2.261      0.000    999.000    999.000
+
+ Intercepts
+    POSMOOD1           2.937      0.060     49.188      0.000
+    NEGMOOD1           2.117      0.090     23.540      0.000
+
+ Residual Variances
+    POSMOOD1           0.268      0.024     11.201      0.000
+    NEGMOOD1           0.484      0.041     11.773      0.000
+
+Latent Class 2
+
+ POSMOOD1   ON
+    SOC_STRS          -0.264      0.325     -0.812      0.417
+
+ NEGMOOD1   ON
+    SOC_STRS           0.726      0.350      2.078      0.038
+
+ NEGMOOD1 WITH
+    POSMOOD1          -0.227      0.023     -9.729      0.000
+
+ Means
+    N#1                0.000      0.000    999.000    999.000
+    N#2               13.816      0.000    999.000    999.000
+
+ Intercepts
+    POSMOOD1           2.860      0.151     18.920      0.000
+    NEGMOOD1           1.791      0.180      9.967      0.000
+
+ Residual Variances
+    POSMOOD1           0.362      0.064      5.628      0.000
+    NEGMOOD1           0.432      0.064      6.733      0.000
+
+Latent Class 3
+
+ POSMOOD1   ON
+    SOC_STRS           0.030      0.181      0.164      0.869
+
+ NEGMOOD1   ON
+    SOC_STRS          -0.250      0.186     -1.340      0.180
+
+ NEGMOOD1 WITH
+    POSMOOD1          -0.227      0.023     -9.729      0.000
+
+ Means
+    N#1               -1.950      0.000    999.000    999.000
+    N#2               -6.002      0.000    999.000    999.000
+
+ Intercepts
+    POSMOOD1           2.698      0.168     16.039      0.000
+    NEGMOOD1           1.844      0.202      9.125      0.000
+
+ Residual Variances
+    POSMOOD1           0.542      0.059      9.229      0.000
+    NEGMOOD1           0.369      0.071      5.220      0.000
+
+Categorical Latent Variables
+
+ Means
+    C#1                0.747      0.151      4.939      0.000
+    C#2               -1.770      0.260     -6.819      0.000
+
+New/Additional Parameters
+    DIFF12             0.077      0.165      0.468      0.640
+    DIFF13             0.240      0.191      1.254      0.210
+    DIFF23             0.162      0.226      0.717      0.473
+    SLOPE12            0.571      0.338      1.687      0.092
+    SLOPE13            0.278      0.208      1.335      0.182
+    SLOPE23           -0.293      0.371     -0.792      0.429
+    NDIFF12            0.325      0.203      1.606      0.108
+    NDIFF13            0.272      0.252      1.082      0.279
+    NDIFF23           -0.053      0.271     -0.195      0.845
+    NSLOPE12          -1.140      0.368     -3.095      0.002
+    NSLOPE13          -0.164      0.234     -0.700      0.484
+    NSLOPE23           0.976      0.396      2.462      0.014
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.754E-04
+       (ratio of smallest to largest eigenvalue)
+
+
+     Beginning Time:  10:43:56
+        Ending Time:  10:43:56
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2019 Muthen & Muthen
