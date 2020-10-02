@@ -85,10 +85,11 @@ ies_data <- read_csv(here("data","ies_bd_data.csv"),
 
 # --------------------------------------------------------------------------------------
 
-**Example specific syntax that varies based on research context:**
+**Specification details that are specific to applied coping example:**
 
 - Within the `lapply()` function `1:6` indicates the number of *K*-class models to estimate.
-- The measurement model item names for the coping strategy example are listed after the `categorical =` & `usevar =` statements. Note, that for Latent Profile Analysis (LPA) the `categorical =` statement should be removed so that items are estimated as continuous variables. 
+- The measurement model item names for the coping strategy example are listed after the `categorical = ...;` & `usevar = ...;` statements. 
+- Note, that for Latent Profile Analysis (LPA) the `categorical = ...;` statement would be removed so that items are estimated as continuous variables. 
 
 ```{r}
 
@@ -361,7 +362,7 @@ m_step2_fit <- mplusModeler(m_step2,
 
 ## Step 3 (part 2) - Estimate the moderation model with covariates & distal outcomes. 
 
-Specification details:
+**Specification details:**
 
 - This example contains two distal outcomes (`POSMOOD1` & `NEGMOOD1`) and one binary covariate (`SOC_STRS`).
 - Under each class-specific statement (e.g., `%C#1%`) the distal outcomes are mentioned to estimate the intercept parameters. 
