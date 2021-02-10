@@ -32,7 +32,7 @@ This approach also relies on the utility of `R-Projects`. This provides a struct
 
 **Download the `R-Project` (NOTE: The coping example data is not currently available)**
 
-#### Link to Github repository here: \textcolor{blue}{https://github.com/garberadamc/LCA-COPING-BD}
+#### Link to Github repository here: [\textcolor{blue}{Appendix - LCA-COPING-BD}](https://github.com/garberadamc/LCA-COPING-BD){target="_blank"} 
 
 
 #### For readers unfamiliar with Github and version controlled R-projects:
@@ -823,19 +823,7 @@ ggsave(here("figures", "Fig5_simple_slopes.png"), dpi=300, height=8.5, width=6.5
 
 # --------------------------------------------------------------------------------------
 
-## 2.0 Response Pattern Table 
-
-To replicate the response pattern table produced in this study (*Table 3*) see the associated `R/MplusAutomation` code example here:
-
-### \textcolor{blue}{https://garberadamc.github.io/project-site/Lab10.1-response-patterns}
-
-Additional examples using `R/MplusAutomation` for a range of analyses can be found here:
-
-### \textcolor{blue}{https://garberadamc.github.io/project-site}
-
-# --------------------------------------------------------------------------------------
-
-## 2.1 Plot of the 2-Class Conditional Item Plot for Comparison
+## 2.0 Plot of the 2-Class Conditional Item Plot for Comparison
 
 # --------------------------------------------------------------------------------------
 
@@ -854,6 +842,19 @@ plot_lca_function(
 
 ```
 
+# --------------------------------------------------------------------------------------
+
+## 2.1 Response Pattern Table 
+
+To replicate the response pattern table produced in this study (*Table 3*) see the associated `R/MplusAutomation` code example here:
+
+### [\textcolor{blue}{LCA-Response-Ratterns}](https://garberadamc.github.io/project-site/Lab10.1-response-patterns){target="_blank"} 
+
+Additional examples using `R/MplusAutomation` for a range of analyses can be found here:
+
+### [\textcolor{blue}{Tidy Workflow with MplusAutomation}](https://garberadamc.github.io/project-site){target="_blank"} 
+
+# --------------------------------------------------------------------------------------
 
 ### References: 
 
