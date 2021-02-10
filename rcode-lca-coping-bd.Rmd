@@ -1,5 +1,5 @@
 ---
-title: "Appendix"
+title: "Appendix - Implement LCA Analyses with MplusAutomation"
 author: ''
 date: ""
 output:
@@ -163,7 +163,7 @@ allFit <- enum_extract %>%
   arrange(Parameters)
 ```
 
-
+Create table using {gt}
 ```{r, eval=TRUE}
 allFit %>% 
   mutate(Title = str_remove(Title, " LCA Enumeration - Youth Coping Strategies")) %>% 
@@ -192,12 +192,9 @@ allFit %>%
   fmt_number(10,decimals = 2,
              drop_trailing_zeros=TRUE,
              suffixing = TRUE) %>% 
-  fmt_number(c(3:9,11), 
-             decimals = 0) %>% 
-  fmt_missing(1:11,
-              missing_text = "--") %>% 
-  fmt(c(8:9,11),
-    fns = function(x) 
+  fmt_number(c(3:9,11), decimals = 0) %>% 
+  fmt_missing(1:11, missing_text = "--") %>% 
+  fmt(c(8:9,11), fns = function(x) 
     ifelse(x<0.001, "<.001",
            scales::number(x, accuracy = 0.01))) %>%
   fmt(10, fns = function(x) 
@@ -430,7 +427,7 @@ savedata <- as.data.frame(m_step1_fit[["results"]]
                                      [["savedata"]])
 ```
 
-Rename the column in savedata for "C" and change to "N"
+Rename the column in `savedata` for "C" and change to "N"
 ```{r}
 
 colnames(savedata)[colnames(savedata)=="C"] <- "N"
@@ -614,18 +611,22 @@ m_step3_fit <- mplusModeler(m_step3,
 
 # --------------------------------------------------------------------------------------
 
-#### Estimate step 3 model with covariate un-centered for simple-slopes plots. This puts the intercepts fixed at the first level of the covariate (`SOC_STRS`). These values are needed to produce the simple slope plots.
+#### Estimate step 3 model with covariate un-centered for simple-slopes plots. 
 
-**Note:** Here the `update()` function is used to take the previous model and remove the Mplus syntax within the `DEFINE` statement that was used to center the covariate `Social Stress`. Next, the updated model input syntax is used to estimate a new model. To learn more about the `update` function see the `MplusAutomation` tutorial article (https://www.tandfonline.com/doi/pdf/10.1080/10705511.2017.1402334).
+
+This puts the intercepts fixed at the first level of the covariate (`SOC_STRS`). These values are needed to produce the simple slope plots.
+
+
+**Note:** Here the `update()` function is used to take the previous model and remove the Mplus syntax within the `DEFINE` statement that was used to center the covariate `Social Stress`. Next, the updated model input syntax is used to estimate a new model. To learn more about the `update` function see the `MplusAutomation` tutorial article (\textcolor{blue}{https://www.tandfonline.com/doi/pdf/10.1080/10705511.2017.1402334}).
 
 ```{r}
 m_uncen <- update(m_step3,
   DEFINE = ~" ") # This update removes the centering syntax from the model object `m_step3`
 
 m_uncen_fit <- mplusModeler(m_uncen,
-                            dataout=here("3step_mplus", "Step3_3step_BD.dat"), 
-                            modelout=here("3step_mplus", "Step3_uncentered_BD.inp"), 
-                            check=TRUE, run = TRUE, hashfilename = FALSE)
+   dataout=here("3step_mplus", "Step3_3step_BD.dat"), 
+   modelout=here("3step_mplus", "Step3_uncentered_BD.inp"), 
+   check=TRUE, run = TRUE, hashfilename = FALSE)UCSB_Navy_mark.png
 ```
 
 # --------------------------------------------------------------------------------------
@@ -687,7 +688,9 @@ ggsave(here("figures","Fig3_distal_barplot.png"), dpi=300, height=4, width=6, un
 
 ## 1.9 Simple Slope Plots
 
+
 **Note:** The un-centered distal intercepts represent the conditional means when the binary covariate is at its first level `SOC_STRS = 0` (i.e., no social stress). Therefore, the conditional mean for `SOC_STRS = 1`  (i.e., social stress) can be calculated by adding the associated slope coefficient to the intercept. 
+
 
 # --------------------------------------------------------------------------------------
 
@@ -823,7 +826,7 @@ ggsave(here("figures", "Fig5_simple_slopes.png"), dpi=300, height=8.5, width=6.5
 
 # --------------------------------------------------------------------------------------
 
-## 2.0 Repsonse Pattern Table 
+## 2.0 Response Pattern Table 
 
 To replicate the response pattern table produced in this study (*Table 3*) see the associated `R/MplusAutomation` code example here:
 
@@ -837,7 +840,7 @@ Additional examples using `R/MplusAutomation` for a range of analyses can be fou
 
 ### References: 
 
-Hallquist, Michael N., and Joshua F. Wiley. 2018. “MplusAutomation: An R Package for FacilitatingLarge-Scale Latent Variable Analyses in Mplus.” Structural Equation Modeling, 1–18. https://doi.org/10.1080/10705511.2017.1402334.
+Hallquist, Michael N., and Joshua F. Wiley. 2018. “MplusAutomation: An R Package for Facilitating Large-Scale Latent Variable Analyses in Mplus.” Structural Equation Modeling, 1–18. https://doi.org/10.1080/10705511.2017.1402334.
 
 Miller, Jon D. Longitudinal Study of American Youth (LSAY), Seventh Grade Data, 1987-1988; 2015-2016. Ann Arbor, MI: Inter-university Consortium for Political and Social Research [distributor], 2019-04-23. https://doi.org/10.3886/ICPSR37287.v1
 
