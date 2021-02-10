@@ -1,0 +1,99 @@
+TITLE:
+Step3_3step_automation Behavioral Disorder
+DATA:
+FILE = "/Users/agarber/Desktop/bd_paper_r_code/3step_mplus/Step3_3step_BD.dat";
+ 
+VARIABLE:
+NAMES = DO1 DO2 DO3 DO5 DO6 FEMALE ETHN_CMP SOC_STRS BOTHR_U NEGMOOD1 POSMOOD1
+     CPROB1 CPROB2 CPROB3 N; 
+ MISSING=.;
+ nominal = N;
+  usevar = n;
+  missing are all (999); 
+  
+  usevar = SOC_STRS POSMOOD1 NEGMOOD1;
+  classes = c(3); 
+DEFINE:
+Center SOC_STRS (Grandmean);
+ANALYSIS:
+estimator = mlr; 
+  type = mixture; 
+  starts = 0;
+MODEL:
+!DISTAL = POSMOOD1 NEGMOOD1
+!MODERATOR = SOC_STRS
+
+%OVERALL%
+POSMOOD1 on SOC_STRS;
+POSMOOD1;
+
+NEGMOOD1 on SOC_STRS;
+NEGMOOD1;
+
+%C#1%
+[n#1@1.797];
+[n#2@-2.261];
+
+[NEGMOOD1](m01);
+NEGMOOD1;
+NEGMOOD1 on SOC_STRS (s01);
+
+[POSMOOD1] (m1);
+POSMOOD1;
+POSMOOD1 on SOC_STRS (s1);
+
+%C#2%
+[n#1@0];
+[n#2@13.816];
+
+[NEGMOOD1](m02);
+NEGMOOD1;
+NEGMOOD1 on SOC_STRS (s02);
+
+[POSMOOD1] (m2);
+POSMOOD1;
+POSMOOD1 on SOC_STRS (s2);
+
+%C#3%
+[n#1@-1.95];
+[n#2@-6.002];
+
+[NEGMOOD1](m03);
+NEGMOOD1;
+NEGMOOD1 on SOC_STRS (s03);
+
+[POSMOOD1] (m3);
+POSMOOD1;
+POSMOOD1 on SOC_STRS (s3);
+MODEL CONSTRAINT:
+New (diff12 diff13
+  diff23 slope12 slope13
+  slope23 ndiff12 ndiff13
+  ndiff23 nslope12 nslope13
+  nslope23);
+
+  diff12 = m1-m2;
+  diff13 = m1-m3;
+  diff23 = m2-m3;
+  slope12 = s1-s2;
+  slope13 = s1-s3;
+  slope23 = s2-s3;
+
+  ndiff12 = m01-m02;
+  ndiff13 = m01-m03;
+  ndiff23 = m02-m03;
+  nslope12 = s01-s02;
+  nslope13 = s01-s03;
+  nslope23 = s02-s03;
+MODEL TEST:
+m1=m2;
+  m2=m3;
+
+  !s1=s2;
+  !s2=s3;
+
+  !m01=m02;
+  !m02=m03;
+
+  !s01=s02;
+  !s02=s03;
