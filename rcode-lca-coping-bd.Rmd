@@ -1,20 +1,17 @@
 ---
-title: "Appendix - Implement LCA Analyses with MplusAutomation"
+title: "Coping Behavior Example - Accompanying R Code"
 author: ''
 date: ""
 output:
   pdf_document:
-    df_print: kable
-    
+    latex_engine: xelatex
+mainfont: Times New Roman
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE)
 library(extrafont)
 loadfonts()
-# pandoc_args: "--highlight=tango"
-#remotes::install_github('rstudio/rmarkdown')
-#library(rmarkdown)
 ```
 
 
@@ -28,21 +25,24 @@ This approach also relies on the utility of `R-Projects`. This provides a struct
 
 # --------------------------------------------------------------------------------------
 
-## 0.0 Preparation
+# Preparation
 
-**Download the `R-Project` (NOTE: The coping example data is not currently available)**
+### Download the R-Project
 
-#### Link to Github repository here: [\textcolor{blue}{Appendix - LCA-COPING-BD}](https://github.com/garberadamc/LCA-COPING-BD){target="_blank"} 
+Link to Github repository here: [$\color{blue}{\text{LCA-COPING-BD}}$](https://github.com/garberadamc/LCA-COPING-BD)
 
-
-#### For readers unfamiliar with Github and version controlled R-projects:
+For readers **unfamiliar with Github** and version controlled R-projects:
 
 1. On the repository page, click the green `Code` button and in the menu choose option `Download ZIP`
 2. Place the un-zipped downloaded folder on your desktop
 3. Within this folder open the file with the blue cube icon that is file named `LCA-COPING-BD.Rproj`
 4. Next open the file containing all analysis code named `rcode-lca-coping-bd.R`.
 
-**Project folder organization (nested folders are used to contain files within the project folder):**
+**Note:** If preferred users may follow analyses using the Rmarkdown script (`.Rmd`).
+
+### Project folder organization
+
+The following sub-folders will be used to contain files:
 
 1. "data"; 2. "enum_mplus"; 3. "3step_mplus"; 4. "figures"
 
@@ -160,7 +160,7 @@ allFit <- enum_extract %>%
   arrange(Parameters)
 ```
 
-Create table using {gt}
+
 ```{r, eval=TRUE}
 allFit %>% 
   mutate(Title = str_remove(Title, " LCA Enumeration - Youth Coping Strategies")) %>% 
@@ -189,9 +189,12 @@ allFit %>%
   fmt_number(10,decimals = 2,
              drop_trailing_zeros=TRUE,
              suffixing = TRUE) %>% 
-  fmt_number(c(3:9,11), decimals = 0) %>% 
-  fmt_missing(1:11, missing_text = "--") %>% 
-  fmt(c(8:9,11), fns = function(x) 
+  fmt_number(c(3:9,11), 
+             decimals = 0) %>% 
+  fmt_missing(1:11,
+              missing_text = "--") %>% 
+  fmt(c(8:9,11),
+    fns = function(x) 
     ifelse(x<0.001, "<.001",
            scales::number(x, accuracy = 0.01))) %>%
   fmt(10, fns = function(x) 
@@ -424,7 +427,7 @@ savedata <- as.data.frame(m_step1_fit[["results"]]
                                      [["savedata"]])
 ```
 
-Rename the column in `savedata` for "C" and change to "N"
+Rename the column in savedata for "C" and change to "N"
 ```{r}
 
 colnames(savedata)[colnames(savedata)=="C"] <- "N"
@@ -608,22 +611,18 @@ m_step3_fit <- mplusModeler(m_step3,
 
 # --------------------------------------------------------------------------------------
 
-#### Estimate step 3 model with covariate un-centered for simple-slopes plots. 
+#### Estimate step 3 model with covariate un-centered for simple-slopes plots. This puts the intercepts fixed at the first level of the covariate (`SOC_STRS`). These values are needed to produce the simple slope plots.
 
-
-This puts the intercepts fixed at the first level of the covariate (`SOC_STRS`). These values are needed to produce the simple slope plots.
-
-
-**Note:** Here the `update()` function is used to take the previous model and remove the Mplus syntax within the `DEFINE` statement that was used to center the covariate `Social Stress`. Next, the updated model input syntax is used to estimate a new model. To learn more about the `update` function see the `MplusAutomation` tutorial article (\textcolor{blue}{https://www.tandfonline.com/doi/pdf/10.1080/10705511.2017.1402334}).
+**Note:** Here the `update()` function is used to take the previous model and remove the Mplus syntax within the `DEFINE` statement that was used to center the covariate `Social Stress`. Next, the updated model input syntax is used to estimate a new model. To learn more about the `update` function see the `MplusAutomation` tutorial article (https://www.tandfonline.com/doi/pdf/10.1080/10705511.2017.1402334).
 
 ```{r}
 m_uncen <- update(m_step3,
   DEFINE = ~" ") # This update removes the centering syntax from the model object `m_step3`
 
 m_uncen_fit <- mplusModeler(m_uncen,
-   dataout=here("3step_mplus", "Step3_3step_BD.dat"), 
-   modelout=here("3step_mplus", "Step3_uncentered_BD.inp"), 
-   check=TRUE, run = TRUE, hashfilename = FALSE)UCSB_Navy_mark.png
+                            dataout=here("3step_mplus", "Step3_3step_BD.dat"), 
+                            modelout=here("3step_mplus", "Step3_uncentered_BD.inp"), 
+                            check=TRUE, run = TRUE, hashfilename = FALSE)
 ```
 
 # --------------------------------------------------------------------------------------
@@ -685,9 +684,7 @@ ggsave(here("figures","Fig3_distal_barplot.png"), dpi=300, height=4, width=6, un
 
 ## 1.9 Simple Slope Plots
 
-
 **Note:** The un-centered distal intercepts represent the conditional means when the binary covariate is at its first level `SOC_STRS = 0` (i.e., no social stress). Therefore, the conditional mean for `SOC_STRS = 1`  (i.e., social stress) can be calculated by adding the associated slope coefficient to the intercept. 
-
 
 # --------------------------------------------------------------------------------------
 
@@ -823,42 +820,24 @@ ggsave(here("figures", "Fig5_simple_slopes.png"), dpi=300, height=8.5, width=6.5
 
 # --------------------------------------------------------------------------------------
 
-## 2.0 Plot of the 2-Class Conditional Item Plot for Comparison
-
-# --------------------------------------------------------------------------------------
-
-
-```{r, eval=TRUE}
-
-plot_lca_function(
-  model_name = output_enum[[2]],
-  item_num = 5,
-  class_num = 2,
-  item_labels = c("Talked to Someone","Got Mad", "Avoidance","Problem Solving", "Worried/Cried"),
-  class_labels = c("Class 1","Class 2"),
-  class_legend_order = c(1,2),
-  plot_title = ""
-  )
-
-```
-
-# --------------------------------------------------------------------------------------
-
-## 2.1 Response Pattern Table 
+## 2.0 Repsonse Pattern Table 
 
 To replicate the response pattern table produced in this study (*Table 3*) see the associated `R/MplusAutomation` code example here:
 
-### [\textcolor{blue}{LCA-Response-Ratterns}](https://garberadamc.github.io/project-site/Lab10.1-response-patterns){target="_blank"} 
+### [$\color{blue}{\text{Lab10.1-Response-Patterns}}$](https://garberadamc.github.io/project-site/Lab10.1-response-patterns)
 
-Additional examples using `R/MplusAutomation` for a range of analyses can be found here:
+# --------------------------------------------------------------------------------------
 
-### [\textcolor{blue}{Tidy Workflow with MplusAutomation}](https://garberadamc.github.io/project-site){target="_blank"} 
+
+## Additional `R/MplusAutomation` Examples 
+
+### [$\color{blue}{\text{Tidy-Workflow-with-MplusAutomation}}$](https://garberadamc.github.io/project-site)
 
 # --------------------------------------------------------------------------------------
 
 ### References: 
 
-Hallquist, Michael N., and Joshua F. Wiley. 2018. “MplusAutomation: An R Package for Facilitating Large-Scale Latent Variable Analyses in Mplus.” Structural Equation Modeling, 1–18. https://doi.org/10.1080/10705511.2017.1402334.
+Hallquist, Michael N., and Joshua F. Wiley. 2018. “MplusAutomation: An R Package for FacilitatingLarge-Scale Latent Variable Analyses in Mplus.” Structural Equation Modeling, 1–18. https://doi.org/10.1080/10705511.2017.1402334.
 
 Miller, Jon D. Longitudinal Study of American Youth (LSAY), Seventh Grade Data, 1987-1988; 2015-2016. Ann Arbor, MI: Inter-university Consortium for Political and Social Research [distributor], 2019-04-23. https://doi.org/10.3886/ICPSR37287.v1
 
@@ -869,11 +848,4 @@ Muthen L.K., & Muthen B.O. (1998-2017) Mplus User's Guide. Eight Edition. Los An
 R Core Team. 2019.R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. https://www.R-project.org/.
 
 Wickham H, et al. (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi: 10.21105/joss.01686.
-
-
-```{r,echo=FALSE, eval=FALSE}
-# knitr::purl
-knitr::purl(input = "rcode-lca-coping-bd.Rmd",
-            output = "rcode-lca-coping-bd2.R")
-```
 
