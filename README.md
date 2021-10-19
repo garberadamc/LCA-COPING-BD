@@ -1,4 +1,4 @@
-# Appendix: 
+# Supplemental Materials: 
 
 ## LCA Analysis in `R` & `MplusAutomation`
 
