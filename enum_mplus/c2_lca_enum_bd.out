@@ -1,0 +1,440 @@
+Mplus VERSION 8.6 (Mac)
+MUTHEN & MUTHEN
+09/22/2021  10:47 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE:
+  Class-2 LCA Enumeration - Youth Coping Strategies
+  DATA:
+  FILE = "/Users/agarber/local_repos/BD-R-Code/enum_mplus/c_lca_enum_bd.dat";
+
+  VARIABLE:
+  NAMES = id FEMALE studraw ETHN_CMP do1 do2 do3 do4 do5 do6 do7 psolv1 psolv2 psolv3
+       psolv4 psolv5 psolv6 psolv7 psolv8 SOC_STRS BOTHR_U negmood1 posmood1;
+   MISSING=.;
+   categorical = do1 do2 do3 do5 do6; !!! Coping strategy items for measurement model !!!
+  usevar = do1 do2 do3 do5 do6;
+
+  classes = c(2);
+  ANALYSIS:
+  estimator = mlr;
+       optseed = 458733;
+       type = mixture;
+       starts = 500 100;
+       processors=10;
+  OUTPUT:
+  sampstat tech11 tech14;
+  PLOT:
+  type = plot3;
+       series = do1 do2 do3 do5 do6(*);
+
+
+
+*** WARNING in OUTPUT command
+  SAMPSTAT option is not available when all outcomes are censored, ordered
+  categorical, unordered categorical (nominal), count or continuous-time
+  survival variables.  Request for SAMPSTAT is ignored.
+*** WARNING
+  Data set contains cases with missing on all variables.
+  These cases were not included in the analysis.
+  Number of cases with missing on all variables:  143
+   2 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+
+Class-2 LCA Enumeration - Youth Coping Strategies
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         446
+
+Number of dependent variables                                    5
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           1
+
+Observed dependent variables
+
+  Binary and ordered categorical (ordinal)
+   DO1         DO2         DO3         DO5         DO6
+
+Categorical latent variables
+   C
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Random seed for analysis                                  458733
+Link                                                         LOGIT
+
+Input data file(s)
+  /Users/agarber/local_repos/BD-R-Code/enum_mplus/c_lca_enum_bd.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             4
+     Number of y missing data patterns           0
+     Number of u missing data patterns           4
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT FOR U
+
+
+           Covariance Coverage
+              DO1           DO2           DO3           DO5           DO6
+              ________      ________      ________      ________      ________
+ DO1            1.000
+ DO2            1.000         1.000
+ DO3            0.996         0.996         0.996
+ DO5            0.998         0.998         0.993         0.998
+ DO6            0.996         0.996         0.991         0.993         0.996
+
+
+UNIVARIATE PROPORTIONS AND COUNTS FOR CATEGORICAL VARIABLES
+
+    DO1
+      Category 1    0.507          226.000
+      Category 2    0.493          220.000
+    DO2
+      Category 1    0.913          407.000
+      Category 2    0.087           39.000
+    DO3
+      Category 1    0.484          215.000
+      Category 2    0.516          229.000
+    DO5
+      Category 1    0.485          216.000
+      Category 2    0.515          229.000
+    DO6
+      Category 1    0.775          344.000
+      Category 2    0.225          100.000
+
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       11
+
+Loglikelihood
+
+          H0 Value                       -1259.240
+          H0 Scaling Correction Factor      1.0697
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                    2540.480
+          Bayesian (BIC)                  2585.584
+          Sample-Size Adjusted BIC        2550.674
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit for the Binary and Ordered Categorical
+(Ordinal) Outcomes
+
+          Pearson Chi-Square
+
+          Value                             38.390
+          Degrees of Freedom                    20
+          P-Value                           0.0079
+
+          Likelihood Ratio Chi-Square
+
+          Value                             38.367
+          Degrees of Freedom                    20
+          P-Value                           0.0080
+
+Chi-Square Test for MCAR under the Unrestricted Latent Class Indicator Model
+
+          Pearson Chi-Square
+
+          Value                             22.851
+          Degrees of Freedom                    45
+          P-Value                           0.9976
+
+          Likelihood Ratio Chi-Square
+
+          Value                             16.170
+          Degrees of Freedom                    45
+          P-Value                           1.0000
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THE ESTIMATED MODEL
+
+    Latent
+   Classes
+
+       1        286.65514          0.64272
+       2        159.34486          0.35728
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON ESTIMATED POSTERIOR PROBABILITIES
+
+    Latent
+   Classes
+
+       1        286.65514          0.64272
+       2        159.34486          0.35728
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASSES
+BASED ON THEIR MOST LIKELY LATENT CLASS MEMBERSHIP
+
+Class Counts and Proportions
+
+    Latent
+   Classes
+
+       1              277          0.62108
+       2              169          0.37892
+
+
+CLASSIFICATION QUALITY
+
+     Entropy                         0.563
+
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2
+
+    1   0.914    0.086
+    2   0.197    0.803
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2
+
+    1   0.884    0.116
+    2   0.149    0.851
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2
+
+    1      2.027    0.000
+    2     -1.745    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ Thresholds
+    DO1$1             -0.462      0.171     -2.705      0.007
+    DO2$1              2.081      0.255      8.176      0.000
+    DO3$1             -0.674      0.252     -2.676      0.007
+    DO5$1             -1.212      0.516     -2.350      0.019
+    DO6$1              0.961      0.201      4.783      0.000
+
+Latent Class 2
+
+ Thresholds
+    DO1$1              0.960      0.420      2.287      0.022
+    DO2$1              3.052      0.479      6.370      0.000
+    DO3$1              1.089      0.465      2.343      0.019
+    DO5$1              2.901      2.899      1.001      0.317
+    DO6$1              1.878      0.454      4.141      0.000
+
+Categorical Latent Variables
+
+ Means
+    C#1                0.587      0.516      1.138      0.255
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.192E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+RESULTS IN PROBABILITY SCALE
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Latent Class 1
+
+ DO1
+    Category 1         0.386      0.041      9.539      0.000
+    Category 2         0.614      0.041     15.145      0.000
+ DO2
+    Category 1         0.889      0.025     35.407      0.000
+    Category 2         0.111      0.025      4.419      0.000
+ DO3
+    Category 1         0.338      0.056      5.998      0.000
+    Category 2         0.662      0.056     11.765      0.000
+ DO5
+    Category 1         0.229      0.091      2.515      0.012
+    Category 2         0.771      0.091      8.454      0.000
+ DO6
+    Category 1         0.723      0.040     17.987      0.000
+    Category 2         0.277      0.040      6.879      0.000
+
+Latent Class 2
+
+ DO1
+    Category 1         0.723      0.084      8.605      0.000
+    Category 2         0.277      0.084      3.295      0.001
+ DO2
+    Category 1         0.955      0.021     46.240      0.000
+    Category 2         0.045      0.021      2.186      0.029
+ DO3
+    Category 1         0.748      0.088      8.544      0.000
+    Category 2         0.252      0.088      2.875      0.004
+ DO5
+    Category 1         0.948      0.143      6.622      0.000
+    Category 2         0.052      0.143      0.364      0.716
+ DO6
+    Category 1         0.867      0.052     16.625      0.000
+    Category 2         0.133      0.052      2.542      0.011
+
+
+LATENT CLASS INDICATOR ODDS RATIOS FOR THE LATENT CLASSES
+
+                                                95% C.I.
+                    Estimate       S.E.  Lower 2.5% Upper 2.5%
+
+Latent Class 1 Compared to Latent Class 2
+
+ DO1
+    Category > 1       4.146      1.713      1.844      9.319
+ DO2
+    Category > 1       2.640      1.583      0.815      8.551
+ DO3
+    Category > 1       5.830      2.770      2.297     14.792
+ DO5
+    Category > 1      61.172    173.273      0.237  15764.260
+ DO6
+    Category > 1       2.501      1.373      0.853      7.336
+
+
+TECHNICAL 11 OUTPUT
+
+     Random Starts Specifications for the k-1 Class Analysis Model
+        Number of initial stage random starts                  20
+        Number of final stage optimizations                     4
+
+
+
+     VUONG-LO-MENDELL-RUBIN LIKELIHOOD RATIO TEST FOR 1 (H0) VERSUS 2 CLASSES
+
+          H0 Loglikelihood Value                        -1294.025
+          2 Times the Loglikelihood Difference             69.570
+          Difference in the Number of Parameters                6
+          Mean                                              8.485
+          Standard Deviation                                6.499
+          P-Value                                          0.0000
+
+     LO-MENDELL-RUBIN ADJUSTED LRT TEST
+
+          Value                                            67.720
+          P-Value                                          0.0000
+
+
+TECHNICAL 14 OUTPUT
+
+     Random Starts Specifications for the k-1 Class Analysis Model
+        Number of initial stage random starts                  20
+        Number of final stage optimizations                     4
+
+     Random Starts Specification for the k-1 Class Model for Generated Data
+        Number of initial stage random starts                   0
+        Number of final stage optimizations for the
+           initial stage random starts                          0
+     Random Starts Specification for the k Class Model for Generated Data
+        Number of initial stage random starts                  40
+        Number of final stage optimizations                     8
+     Number of bootstrap draws requested                   Varies
+
+
+     PARAMETRIC BOOTSTRAPPED LIKELIHOOD RATIO TEST FOR 1 (H0) VERSUS 2 CLASSES
+
+          H0 Loglikelihood Value                        -1294.025
+          2 Times the Loglikelihood Difference             69.570
+          Difference in the Number of Parameters                6
+          Approximate P-Value                              0.0000
+          Successful Bootstrap Draws                            5
+
+     WARNING:  OF THE 5 BOOTSTRAP DRAWS, 5 DRAWS HAD BOTH A SMALLER LRT VALUE THAN THE
+     OBSERVED LRT VALUE AND NOT A REPLICATED BEST LOGLIKELIHOOD VALUE FOR THE 2-CLASS MODEL.
+     THIS MEANS THAT THE P-VALUE MAY NOT BE TRUSTWORTHY DUE TO LOCAL MAXIMA.
+     INCREASE THE NUMBER OF RANDOM STARTS USING THE LRTSTARTS OPTION.
+
+
+
+PLOT INFORMATION
+
+The following plots are available:
+
+  Histograms (sample values)
+  Scatterplots (sample values)
+  Sample proportions and estimated probabilities
+
+     Beginning Time:  10:47:17
+        Ending Time:  10:47:17
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

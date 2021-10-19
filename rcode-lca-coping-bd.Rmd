@@ -19,7 +19,7 @@ loadfonts()
 
 # Motivation for MplusAutomation workflow:
 
-This `R` tutorial is intended to provide a template for estimating latent class analysis (LCA), integrating the unconditional LCA with a larger SEM model, and producing publication ready figures in a systematic manner. Using this approach all code for data pre-processing, model estimation, tabulation, and figure processing can be contained within a single script providing clear documentation. It is the authors' belief that this dramatically reduces risk of user-error, is conducive to open-science philosophy, and scientific transparency. All models are estimated using `Mplus` (Muthén & Muthén, 1998 - 2017) using the wrapping package `MplusAutomation` (Hallquist & Wiley, 2018). This method requires the user to have the proprietary software `Mplus` installed on their computer. 
+This `R` tutorial is intended to provide a template for estimating latent class analysis (LCA), integrating the unconditional LCA with a larger SEM model, and producing publication ready figures in a systematic manner. Using this approach all code for data pre-processing, model estimation, tabulation, and figure processing can be contained within a single script providing clear documentation. It is the authors' belief that this dramatically reduces risk of user-error, is conducive to open-science philosophy, and scientific transparency. All models are estimated using `Mplus` (Version 8.6; Muthén & Muthén, 1998 - 2017) using the wrapping package `MplusAutomation` (Hallquist & Wiley, 2018). This method requires the user to have the proprietary software `Mplus` installed on their computer. 
   
 This approach also relies on the utility of `R-Projects`. This provides a structured framework for organizing all associated data files, Mplus input/output files, scripts, and figures. Given the large number of Mplus output files inherent to fitting mixture models, creating a system of project sub-folders greatly improves organization (i.e., folders; 'data', 'mplus_files' 'figures', etc.) Additionally, the communication between `R` and `Mplus` requires the specification of file-paths, a procedure which is streamlined by use of `R-projects`. Due to the reliance on file-paths, the `here` package ensures that the syntax for file-paths is uniform across operating systems (e.g., Windows or Mac) enabling reproducibility. 
 
@@ -31,7 +31,7 @@ This approach also relies on the utility of `R-Projects`. This provides a struct
 
 Link to Github repository here: [$\color{blue}{\text{LCA-COPING-BD}}$](https://github.com/garberadamc/LCA-COPING-BD)
 
-For readers **unfamiliar with Github** and version controlled R-projects:
+For readers new to Github & version controlled R-projects:
 
 1. On the repository page, click the green `Code` button and in the menu choose option `Download ZIP`
 2. Place the un-zipped downloaded folder on your desktop
@@ -42,33 +42,25 @@ For readers **unfamiliar with Github** and version controlled R-projects:
 
 ### Project folder organization
 
-The following sub-folders will be used to contain files:
+The following sub-folders will be used to contain files within the project directory:
 
 1. "data"; 2. "enum_mplus"; 3. "3step_mplus"; 4. "figures"
 
-\textcolor{red}{Note regarding  project location:} If the main project folder is located within too many nested folders it may result in a file-path error when estimating models with `MplusAutomation`. 
+\textcolor{red}{Note regarding location of project directory:} If the main project folder is located within too many nested folders it may result in a file-path error when estimating models with `MplusAutomation`. 
 
 # --------------------------------------------------------------------------------------
 
-To install package {`rhdf5`} 
-```{r, eval=FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE)) 
-  install.packages("BiocManager")
-
-BiocManager::install("rhdf5")
-```
 
 Load packages
 ```{r, eval=TRUE}
-library(MplusAutomation)
-library(tidyverse)
-library(rhdf5)
-library(here)
-library(glue)
-library(gt)
-library(reshape2)
-library(cowplot)
-library(patchwork)
+library(MplusAutomation)  # A conduit between R & Mplus
+library(here)             # To locate or send files within the Rproject folder
+library(glue)             # To insert R code within strings
+library(gt)               # For pretty tables
+library(reshape2)         # For manipulating plot data
+library(cowplot)          # For pretty plots
+library(patchwork)        # To effortlessly combine plots
+library(tidyverse)        # For everything else...
 ```
 
 Read in data. File-paths are set using R-Projects & the {`here`} package
@@ -107,14 +99,16 @@ lca_k1_6  <- lapply(1:6, function(k) {
   
   ANALYSIS = 
     "estimator = mlr; 
+     ! optseed = 458733; !!! FOR REPLICATING PLOTS !!!
      type = mixture;
+     starts = 500 100;
      processors=10;",
   
   PLOT = 
     "type = plot3; 
      series = do1 do2 do3 do5 do6(*);",
   
-  OUTPUT = "sampstat tech11 tech14;",
+  OUTPUT = "tech11 tech14;",
   
   usevariables = colnames(ies_data),
   rdata = ies_data)
@@ -131,7 +125,7 @@ lca_enum_fit <- mplusModeler(lca_enum,
 
 ##  1.2 Generate Model Fit Summary Table 
 
-- This syntax can be used to compare model fit from the series of LCA models generated during enumeration ( *Table 4* in manuscript). 
+- This syntax can be used to compare model fit from the series of LCA models generated during enumeration ( *Table 2* in manuscript). 
 - The code produces a table that is approximately in APA format. 
 
 # --------------------------------------------------------------------------------------
@@ -144,7 +138,7 @@ enum_extract <- LatexSummaryTable(output_enum,
                            "BLRT_PValue", "T11_VLMR_PValue","Observations"))
 ```
 
-\pagebreak
+\newpage
 
 Calculate relevant fit indices for summary table
 ```{r, eval=TRUE}
@@ -174,7 +168,7 @@ allFit %>%
     T11_VLMR_PValue = "VLMR",
     BLRT_PValue = "BLRT",
     BF = md("BF"),
-    cmPk = md("*cmP_k*")) %>%
+    cmPk = md("*cmPk*")) %>%
   tab_footnote(
     footnote = md(
     "*Note.* Par = parameters; *LL* = log likelihood;
@@ -231,7 +225,7 @@ allFit %>% select(2:7) %>%
 
 Save plot in the `figures` folder.
 ```{r}
-ggsave(here("figures", "Fig2_IC_plot.png"), dpi=300, height=5, width=7, units="in")
+ggsave(here("figures", "FigS1_IC_plot.png"), dpi=300, height=5, width=7, units="in")
 ```
 
 
@@ -248,18 +242,15 @@ This syntax produces a plot containing a series of LCA probability plot facets. 
 model_results <- data.frame()
 
 for (i in 1:length(output_enum)) {
-  temp <- output_enum[[i]]$parameters$unstandardized
-  temp <- data.frame(unclass(temp)) %>%
-    mutate(model = paste0(i, "-Class Model")) 
-  model_results <- rbind(model_results, temp)
-}
+  temp <- data.frame(unclass(output_enum[[i]]$parameters$unstandardized)) %>%
+    mutate(model = paste0(i, "-Class Model"))
+  model_results <- rbind(model_results, temp) }
 
-model_results <- model_results %>% 
-  filter(paramHeader == "Thresholds") %>% 
-  select(est, model, LatentClass, param) %>% 
-  mutate(prob = (1 / (1 + exp(est)))) 
+pp_plots <- model_results %>% 
+  filter(paramHeader == "Thresholds") %>% select(est, model, LatentClass, param) %>% 
+  mutate(prob = (1 / (1 + exp(est))), param = str_to_title(str_remove_all(param, "[$1]"))) 
 
-ggplot(model_results,
+ggplot(pp_plots,
        aes(x = param, y = prob,
            color = LatentClass,
            shape = LatentClass,
@@ -268,22 +259,24 @@ ggplot(model_results,
   facet_wrap(~ model, ncol = 2) +
   labs(title = "LCA Posterior Probability Plot",
        x= "Coping Strategy Items", y = "Probability") +
-  theme_minimal()
+  theme_minimal() + theme(legend.position = "none", axis.text.x = element_text(size = 6))
 ```
 
 ```{r}
-ggsave(here("figures","FigA1_compare_kclass_LCAs.png"), dpi=300, height=4, width=6, units="in")  
+ggsave(here("figures","FigS1_compare_kclass_LCAs.png"), dpi=300, height=4, width=6, units="in")  
 ```
+
+\newpage
 
 # --------------------------------------------------------------------------------------
 
 ##  1.5 Plot Final Model - Conditional Item Probability Plot 
 
-This code generates the figure as presented in the manuscript for the final unconditional LCA model. 
+This syntax generates the figure as presented in the manuscript for the final unconditional LCA model. 
 
 # --------------------------------------------------------------------------------------
 
-### This syntax creates a function called `plot_lca_function` that requires 7 arguments (inputs):
+### Create a function called `plot_lca_function` that requires 7 arguments (inputs):
 
 - `model_name`: name of Mplus model object (e.g., `model_step1`)
 - `item_num`: the number of items in LCA measurement model (e.g., `5`)
@@ -293,11 +286,6 @@ This code generates the figure as presented in the manuscript for the final unco
 - `class_legend_order` = change the order that class names are listed in the plot legend (e.g., `c(2,1,3)`)
 - `plot_title`: include the title of the plot here (e.g., `"LCA Posterior Probability Plot"`)
 
-Read in plot data from Mplus output file `Step1_3step_BD.out`
-```{r, eval=TRUE}
-model_step1 <- readModels(here("3step_mplus", "Step1_3step_BD.out"), quiet = TRUE)
-                           
-```
 
 ```{r, eval=TRUE}
 
@@ -320,7 +308,7 @@ plot_data$Var <- fct_inorder(plot_data$Var)
 
 pd_long_data <- melt(plot_data, id.vars = "Var") 
 
-# This syntax uses the date-frame created above to produce the plot with `ggplot()`
+# This syntax uses the data.frame created above to produce the plot with `ggplot()`
 
 p <- pd_long_data %>%
   ggplot(aes(x = as.integer(Var), y = value,
@@ -331,7 +319,8 @@ p <- pd_long_data %>%
   labs(title = plot_title, y = "Probability") +
   theme_cowplot() +
   theme(legend.title = element_blank(), 
-        legend.position = "top")
+        legend.position = "top") +
+  coord_cartesian(xlim = c(.9, 5.4), ylim = c(-.05, 1.05), expand = FALSE) 
 
 p
 return(p)
@@ -340,23 +329,45 @@ return(p)
 ```
 
 
-## Run the `plot_lca_function` by specifying each input (*Figure 1*)
+### Run the `plot_lca_function` for the 3-class & 2-class models 
 ```{r, eval=TRUE}
-
-plot_lca_function(
-  model_name = model_step1, 
+c3 <- plot_lca_function(
+  model_name = output_enum[[3]], 
   item_num = 5,
   class_num = 3,
   item_labels = c("Talked to Someone","Got Mad", "Avoidance","Problem Solving", "Worried/Cried"),
-  class_labels = c("Adaptive Coping","Externalizing Behavior","No Coping"),
+  class_labels = c("Adaptive Coping","Externalizing","No Coping"),
   class_legend_order = c(2,1,3),
-  plot_title = "LCA Posterior Probability Plot"
+  plot_title = ""
   )
+
 ```
 
-```{r}
-ggsave(here("figures", "Fig1_LCA_3-Class.png"), dpi=300, height=5, width=7, units="in")
+
+```{r, eval=TRUE}
+c2 <- plot_lca_function(
+model_name = output_enum[[2]],
+item_num = 5,
+class_num = 2,
+item_labels = c("Talked to Someone","Got Mad", "Avoidance","Problem Solving", "Worried/Cried"),
+class_labels = c("Class 1","Class 2"),
+class_legend_order = c(1,2),
+plot_title = ""
+)
 ```
+
+# --------------------------------------------------------------------------------------
+
+### Combine the 3-class and 2-class LCA Posterior Probability Plots (*Figure 1*)
+
+Note: This code combines 2 ggplot objects using the {patchwork} package.
+```{r, eval=TRUE, fig.width = 6.5, fig.height = 8.5}
+c2/c3 
+```
+```{r}
+ggsave(here("figures", "Fig1_LCAs_Combined.png"), dpi=300, height=8.5, width=7, units="in")
+```
+
 
 # --------------------------------------------------------------------------------------
 
@@ -378,8 +389,7 @@ m_step1  <- mplusObject(
     
     !!! NOTE: All auxiliary variables to be considered in the final model should be listed here !!!
     auxiliary = 
-    FEMALE ETHN_CMP SOC_STRS 
-    BOTHR_U negmood1 posmood1;",
+    SOC_STRS negmood1 posmood1;",
   
   ANALYSIS = 
    "estimator = mlr; 
@@ -388,15 +398,12 @@ m_step1  <- mplusObject(
   
   SAVEDATA = 
    "!!! NOTE: This saved dataset will contain class probabilities and modal assignment columns !!!
-    File=3step_BD_savedata_012020.dat;
+    File=3step_BD_savedata_092021.dat;
     Save=cprob;
     Missflag= 999;",
   
-  MODEL = "",
-  OUTPUT = "",
-  
   PLOT = 
-    "type = plot3; 
+   "type = plot3; 
     series = do1 do2 do3 do5 do6(*);",
   
   usevariables = colnames(ies_data),
@@ -467,7 +474,6 @@ m_step2  <- mplusObject(
   [n#1@{logit_cprobs[3,1]}];
   [n#2@{logit_cprobs[3,2]}];"),
   
-  OUTPUT = "!tech11  tech14 res;",
  
   PLOT = 
  "!type = plot3; 
@@ -494,8 +500,10 @@ m_step2_fit <- mplusModeler(m_step2,
 
 - This example contains two distal outcomes (`POSMOOD1` & `NEGMOOD1`) and one binary covariate (`SOC_STRS`).
 - Under each class-specific statement (e.g., `%C#1%`) the distal outcomes are mentioned to estimate the intercept parameters. 
-- Moderation is specified by mentioning the `"outcome ON covariate;"` syntax under each of the class-specific statements. 
-- Note that the binary covariate is centered so that reported distal means (intercepts) are estimated at the weighted average of Social Stress.
+- Moderation is specified by mentioning the statement `"OUTCOME on COVARIATE;"` under each of the class-specific statements (e.g., `%C#1%`). 
+- Class-specific distal means are specified by mentioning the outcome variable inside square brackets (e.g., `[POSMOOD1];`) repeated under each class-specific model statement. Variances are specified by mentioning the outcome variable without brackets (e.g., `POSMOOD1;`)
+- Parameters are labeled by adding parentheses following parameter name (e.g., `[NEGMOOD1](m01)`) this label can be then used to conduct additional tests within the `MODELCONSTRAINT =` section of the input file. 
+- Note that the binary covariate (`SOC_STRS`) is centered so that reported distal means (intercepts) are estimated at the weighted average of Social Stress.
 
 ```{r}
 
@@ -520,8 +528,8 @@ m_step3  <- mplusObject(
   
   MODEL =
   glue(
- "!DISTAL = POSMOOD1 NEGMOOD1
-  !MODERATOR = SOC_STRS
+ "!!! DISTAL = POSMOOD1 NEGMOOD1 !!!
+  !!! MODERATOR = SOC_STRS       !!!
   
   %OVERALL%
   POSMOOD1 on SOC_STRS;
@@ -534,9 +542,9 @@ m_step3  <- mplusObject(
   [n#1@{logit_cprobs[1,1]}];
   [n#2@{logit_cprobs[1,2]}];
   
-  [NEGMOOD1](m01);
-  NEGMOOD1;                      !!! estimate conditional intercept !!!
-  NEGMOOD1 on SOC_STRS (s01);    !!! estimate conditional regression !!!
+  [NEGMOOD1](m01);                !!! estimate conditional intercept  !!!
+  NEGMOOD1;                       !!! estimate conditional variance   !!!
+  NEGMOOD1 on SOC_STRS (s01);     !!! estimate conditional regression !!!
 
   [POSMOOD1] (m1);
   POSMOOD1;
@@ -566,8 +574,8 @@ m_step3  <- mplusObject(
   POSMOOD1;
   POSMOOD1 on SOC_STRS (s3);"),
   
-  MODELCONSTRAINT = 
- "New (diff12 diff13
+  MODELCONSTRAINT =                 
+ "New (diff12 diff13              !!! Testing equivalenve of the conditional intercepts and slope !!!
   diff23 slope12 slope13
   slope23 ndiff12 ndiff13
   ndiff23 nslope12 nslope13
@@ -595,7 +603,7 @@ m_step3  <- mplusObject(
   !m01=m02;    !!! Distal outcome omnibus Wald test for `NEGMOOD1` !!!
   !m02=m03;
 
-  !s01=s02;   !!! Slope difference omnibus Wald test for `POSMOOD1 on SOC_STRS` !!!
+  !s01=s02;    !!! Slope difference omnibus Wald test for `POSMOOD1 on SOC_STRS` !!!
   !s02=s03;",
  
   usevariables = colnames(savedata), 
@@ -611,7 +619,9 @@ m_step3_fit <- mplusModeler(m_step3,
 
 # --------------------------------------------------------------------------------------
 
-#### Estimate step 3 model with covariate un-centered for simple-slopes plots. This puts the intercepts fixed at the first level of the covariate (`SOC_STRS`). These values are needed to produce the simple slope plots.
+### Estimate step 3 moderation model with covariate un-centered to produce simple-slopes plots 
+
+- Intercepts is fixed at the first level of the covariate `SOC_STRS`
 
 **Note:** Here the `update()` function is used to take the previous model and remove the Mplus syntax within the `DEFINE` statement that was used to center the covariate `Social Stress`. Next, the updated model input syntax is used to estimate a new model. To learn more about the `update` function see the `MplusAutomation` tutorial article (https://www.tandfonline.com/doi/pdf/10.1080/10705511.2017.1402334).
 
@@ -668,7 +678,7 @@ ggplot(distal_data,
             position=position_dodge(.9)) +
   scale_fill_grey(start = 0.6, end = 1.0) +
   theme_cowplot() +
-  xlab("") + ylab("Mean Value") +
+  labs(x = "", y = "Mean Value", fill = "Latent Class") +
   theme(text=element_text(family="Times New Roman", size=12),
         axis.text.x=element_text(size=10)) +
         coord_cartesian(expand = FALSE)
@@ -805,17 +815,16 @@ n_plot <- ggplot(plot_neg,
 
 # --------------------------------------------------------------------------------------
 
-## Combine the two simple slopes graphs for distal outcomes positive & negative mood (*Figure 5*)
+## Combine the two simple slopes graphs for distal outcomes positive & negative mood (*Figure 4*)
 
-Note: This code combines 2 ggplot objects using the {patchwork} package.
 ```{r, eval=TRUE, fig.width = 6.5, fig.height = 8.5}
 
-p_plot / n_plot
+p_plot / n_plot # combines plots using the {patchwork} package
 
 ```
 
 ```{r}
-ggsave(here("figures", "Fig5_simple_slopes.png"), dpi=300, height=8.5, width=6.5, units="in")
+ggsave(here("figures", "Fig4_simple_slopes.png"), dpi=300, height=8.5, width=6.5, units="in")
 ```
 
 # --------------------------------------------------------------------------------------
