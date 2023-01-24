@@ -1,7 +1,7 @@
 
-# A repository for paper titled: 
+## A repository for paper titled: 
 
-"The Utility of Latent Class Analysis to Understand Heterogeneity in Youth’s Coping Strategies: A Methodological Introduction"
+### "The Utility of Latent Class Analysis to Understand Heterogeneity in Youth’s Coping Strategies: A Methodological Introduction"
 
 ### Article can be found here: https://journals.sagepub.com/doi/10.1177/01987429211067214
 
