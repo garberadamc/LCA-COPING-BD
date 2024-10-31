@@ -1,0 +1,71 @@
+---
+title: "Dot plot with logistic curve"
+author: "Adam Garber"
+date: "2023-05-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#install.packages("palmerpenguins")
+library(palmerpenguins)
+library(tidyverse)
+
+penguin_data <- penguins %>% 
+  filter(species == c("Adelie", "Chinstrap")) # keep two levels (remove "Gentoo" rows)
+```
+
+```{r}
+
+library(distributional)
+library(ggdist)
+
+penguin_data2 <- penguin_data %>% 
+  drop_na()
+
+penguin_data2 %>% 
+  ggplot(aes(x = flipper_length_mm, y = sex, side = sex)) +
+  geom_dots(scale = 0.5) +
+  scale_side_mirrored(guide = "none") +
+  ggtitle(
+    "geom_dots(scale = 0.5)",
+    'aes(side = sex) + scale_side_mirrored()'
+  ) 
+  
+m = glm(sex == "male" ~ flipper_length_mm, data = penguin_data, family = binomial)
+
+prediction_grid = with(penguin_data2, 
+  data.frame(flipper_length_mm = seq(min(flipper_length_mm), max(flipper_length_mm), length.out = 100)))
+
+prediction_grid %>%
+  bind_cols(predict(m, ., se.fit = TRUE)) %>%
+  mutate(
+    # distribution describing uncertainty in log odds
+    log_odds = dist_normal(fit, se.fit),
+    # inverse-logit transform the log odds to get
+    # distribution describing uncertainty in Pr(sex == "male")
+    p_male = dist_transformed(log_odds, plogis, qlogis)
+  ) %>%
+  ggplot(aes(x = flipper_length_mm), color=black) +
+  geom_dots(
+    aes(y = as.numeric(sex == "male"), side = sex,
+        fill=sex),
+    scale = 0.4,
+    data = penguin_data2
+  ) +
+  stat_lineribbon(
+    aes(ydist = p_male), alpha = 1/4, fill = "blue"
+  ) +
+  scale_side_mirrored(guide = "none") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    title = "Predicting Sex by Flipper Length",
+    subtitle = '',
+    x = "Flipper Length (mm)",
+    y = "Probability (Sex = Male)"
+  ) + theme(legend.position = "none")
+
+```
